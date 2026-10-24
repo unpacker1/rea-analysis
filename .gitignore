@@ -1,0 +1,17 @@
+node_modules/
+.env
+.env.*
+*.apk
+*.so
+*.db
+*.sqlite
+*.sql
+*.zip
+*.har
+*.pem
+*.key
+private/
+secrets/
+input/
+outputs/
+reports/
