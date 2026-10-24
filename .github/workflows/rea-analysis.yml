@@ -2,6 +2,8 @@
 name: REA static analysis example
 
 on:
+  push:
+    branches: [main]
   workflow_dispatch:
 
 permissions:
@@ -12,7 +14,7 @@ jobs:
     runs-on: ubuntu-24.04
     timeout-minutes: 10
     env:
-      ARTIFACT_PATH: build/rea-ci-demo
+      ARTIFACT_PATH: fixtures/protocol-demo
     steps:
       - name: Prepare isolated report directory
         id: reports
@@ -30,12 +32,8 @@ jobs:
         run: |
           npm install --prefix "${RUNNER_TEMP}/rea-tool" --no-audit --no-fund --ignore-scripts --save-exact rea-agents@6.7.0
           echo "${RUNNER_TEMP}/rea-tool/node_modules/.bin" >> "${GITHUB_PATH}"
-      - name: Build a known artifact
-        id: build
-        run: |
-          mkdir -p build/rea-ci-demo
-          printf '%s\n' '{"name":"rea-ci-demo","version":"1.0.0","type":"module","main":"index.js"}' > build/rea-ci-demo/package.json
-          printf '%s\n' 'export const message = "hello";' 'throw new Error("This artifact must not be executed.");' > build/rea-ci-demo/index.js
+      - name: Verify synthetic protocol fixture
+        run: node --test fixtures/protocol-demo/index.test.mjs
       - name: Analyze and retain the original exit status
         id: analyze
         shell: bash
